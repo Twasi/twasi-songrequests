@@ -2,9 +2,11 @@ package net.twasiplugin.songrequests.database.models;
 
 import net.twasi.core.database.models.BaseEntity;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Entity;
 
 import java.util.Date;
 
+@Entity("twasi.songrequests.spotify-credentials")
 public class SpotifyCredentialsDTO extends BaseEntity {
 
     private ObjectId user;

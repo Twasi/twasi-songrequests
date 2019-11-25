@@ -1,0 +1,67 @@
+package net.twasiplugin.songrequests.database.models;
+
+import net.twasi.core.database.models.BaseEntity;
+import net.twasiplugin.songrequests.api.ws.songrequest.models.SongDTO;
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Entity;
+
+import java.util.Calendar;
+import java.util.Date;
+
+@Entity("twasi.songrequests.requests")
+public class SongrequestDTO extends BaseEntity {
+
+    private ObjectId user;
+    private SongDTO song;
+    private boolean skipped = false;
+    private boolean played = false;
+    private Date requested = Calendar.getInstance().getTime();
+
+    public SongrequestDTO(ObjectId user, SongDTO song) {
+        this.user = user;
+        this.song = song;
+    }
+
+    public SongrequestDTO() {
+    }
+
+    public ObjectId getUser() {
+        return user;
+    }
+
+    public void setUser(ObjectId user) {
+        this.user = user;
+    }
+
+    public SongDTO getSong() {
+        return song;
+    }
+
+    public void setSong(SongDTO song) {
+        this.song = song;
+    }
+
+    public boolean isSkipped() {
+        return skipped;
+    }
+
+    public void setSkipped(boolean skipped) {
+        this.skipped = skipped;
+    }
+
+    public boolean isPlayed() {
+        return played;
+    }
+
+    public void setPlayed(boolean played) {
+        this.played = played;
+    }
+
+    public Date getRequested() {
+        return requested;
+    }
+
+    public void setRequested(Date requested) {
+        this.requested = requested;
+    }
+}

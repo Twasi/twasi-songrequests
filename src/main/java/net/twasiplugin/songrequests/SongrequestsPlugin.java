@@ -3,7 +3,7 @@ package net.twasiplugin.songrequests;
 import net.twasi.core.api.ws.TwasiWebsocketEndpoint;
 import net.twasi.core.plugin.TwasiPlugin;
 import net.twasi.core.plugin.api.TwasiUserPlugin;
-import net.twasiplugin.songrequests.api.ws.songrequest.SongRequestListener;
+import net.twasiplugin.songrequests.api.ws.songrequest.SongRequestEventListener;
 import net.twasiplugin.songrequests.api.ws.spotify.SpotifyCredentials;
 
 import java.util.Arrays;
@@ -26,7 +26,7 @@ public class SongrequestsPlugin extends TwasiPlugin<SongrequestsConfig> {
     public List<TwasiWebsocketEndpoint<?>> getWebsocketEndpoints() {
         return Arrays.asList(
                 new SpotifyCredentials(),
-                new SongRequestListener()
+                new SongRequestEventListener()
         );
     }
 }
