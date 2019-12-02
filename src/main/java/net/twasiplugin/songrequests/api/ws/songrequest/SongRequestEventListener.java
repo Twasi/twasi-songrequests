@@ -20,20 +20,18 @@ public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<Son
         TwitchAccount channel = msg.getClient().getAuthentication().getUser().getTwitchAccount();
         JsonObject action = msg.getAction().getAsJsonObject();
         switch (action.get("type").getAsString().toLowerCase()) {
-            case "newSong":
-                newSong(SongDTO.from(action.get("song").getAsJsonObject()), channel);
+            case "skip":
+            case "next":
+
         }
         return TwasiWebsocketAnswer.warn("No valid request type delivered.");
     }
 
     public void newSong(SongDTO song, TwitchAccount channel) {
-        publish(channel, new TwasiWebsocketEvent<>(song).toSendable());
+        publish(channel, new TwasiWebsocketEvent<>(song, "song").toSendable());
     }
 
     private void publish(TwitchAccount channel, JsonElement element) {
-        publishFilteredByConfig(config -> {
-            String check = config.channel;
-            return check.equalsIgnoreCase(channel.getTwitchId()) || check.equalsIgnoreCase(channel.getUserName());
-        }, element);
+        publishFilteredByConfig(config -> config.channel.equalsIgnoreCase(channel.getTwitchId()) || config.channel.equalsIgnoreCase(channel.getUserName()), element);
     }
 }
