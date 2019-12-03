@@ -3,8 +3,11 @@ package net.twasiplugin.songrequests;
 import net.twasi.core.api.ws.TwasiWebsocketEndpoint;
 import net.twasi.core.plugin.TwasiPlugin;
 import net.twasi.core.plugin.api.TwasiUserPlugin;
+import net.twasi.core.services.ServiceRegistry;
+import net.twasi.core.services.providers.ServletService;
 import net.twasiplugin.songrequests.api.ws.songrequest.SongRequestEventListener;
 import net.twasiplugin.songrequests.api.ws.spotify.SpotifyCredentials;
+import net.twasiplugin.songrequests.servlets.SpotifyAuthServlet;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,10 +19,11 @@ public class SongrequestsPlugin extends TwasiPlugin<SongrequestsConfig> {
     @Override
     public void onActivate() {
         CONFIG = getConfiguration();
+        ServiceRegistry.get(ServletService.class).addServlet(SpotifyAuthServlet.class, "spotify-callback");
     }
 
     public Class<? extends TwasiUserPlugin> getUserPluginClass() {
-        return null;
+        return SongrequestUserPlugin.class;
     }
 
     @Override

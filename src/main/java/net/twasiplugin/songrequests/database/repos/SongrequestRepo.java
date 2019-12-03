@@ -20,11 +20,14 @@ public class SongrequestRepo extends Repository<SongrequestDTO> {
         Query<SongrequestDTO> q = query()
                 .field("user").equal(user.getId());
 
-        if (played) q = q
-                .field("played").notEqual(null);
+        if (played) q
+                .or(
+                        q.criteria("played").notEqual(null),
+                        q.criteria("skipped").notEqual(null)
+                );
         else q = q
                 .field("played").equal(null)
-                .field("skipped").equal(false);
+                .field("skipped").equal(null);
 
         return q
                 .order("-requested")

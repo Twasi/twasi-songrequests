@@ -47,7 +47,7 @@ public class SongRequestController {
      * @throws NullPointerException if there is no current song
      */
     public void skip() throws NullPointerException {
-        currentSong.setSkipped(true);
+        currentSong.setSkipped();
         repo.commit(currentSong);
         sync();
     }

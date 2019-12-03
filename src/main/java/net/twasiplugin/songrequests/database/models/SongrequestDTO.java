@@ -13,7 +13,7 @@ public class SongrequestDTO extends BaseEntity {
 
     private ObjectId user;
     private SongDTO song;
-    private boolean skipped = false;
+    private Date skipped = null;
     private Date played = null;
     private Date requested = Calendar.getInstance().getTime();
 
@@ -42,11 +42,15 @@ public class SongrequestDTO extends BaseEntity {
     }
 
     public boolean isSkipped() {
+        return skipped != null;
+    }
+
+    public Date getSkipped() {
         return skipped;
     }
 
-    public void setSkipped(boolean skipped) {
-        this.skipped = skipped;
+    public void setSkipped() {
+        this.skipped = Calendar.getInstance().getTime();
     }
 
     public boolean isPlayed() {
