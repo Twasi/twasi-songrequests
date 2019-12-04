@@ -1,11 +1,21 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-
+    <title>Spotify Authentication</title>
+    <meta charset="UTF-8">
 </head>
 <body>
-<script>
-
-</script>
+    <span id="text">Redirecting...</span>
+    <script>
+        const updateText = (text) => {
+            document.getElementById("text").innerText = text;
+        };
+        const code = new URL(window.location).searchParams.get("code");
+        window.addEventListener("message", data => {
+            if (data.data === "close") window.close();
+        });
+        window.opener.postMessage("code:" + code, "*");
+        updateText("An error occured. Please close this window and retry.");
+    </script>
 </body>
 </html>

@@ -38,11 +38,10 @@ public class SpotifyCredentials extends TwasiWebsocketEndpoint<WebsocketClientCo
     public JsonElement handle(TwasiWebsocketMessage msg) throws IOException {
         JsonObject action = msg.getAction().getAsJsonObject();
         switch (action.get("type").getAsString().toLowerCase()) {
-            case "refresh":
-                return refresh(msg);
             case "init":
                 return init();
             case "get":
+            case "refresh": // Don't let the client decide when to refresh. If The token is nearly dead it refreshes anyway
                 return get(msg);
             case "set":
                 return set(msg);
