@@ -128,7 +128,7 @@ public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<Son
         try {
             JsonObject song = msg.getAction().getAsJsonObject().get("song").getAsJsonObject();
             try {
-                if (song.get("requester").isJsonNull()) {
+                if (!song.has("requester")) {
                     song.remove("requester");
                     song.add("requester", new Gson().toJsonTree(RequesterDTO.from(user.getTwitchAccount())));
                 }

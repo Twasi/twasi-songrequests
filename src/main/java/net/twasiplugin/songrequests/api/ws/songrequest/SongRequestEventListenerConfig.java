@@ -6,7 +6,4 @@ public class SongRequestEventListenerConfig extends WebsocketClientConfig {
 
     public String channel;
 
-    public boolean newSongs = true;
-    public boolean SongChanged = true;
-
 }
