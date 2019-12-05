@@ -30,7 +30,7 @@ public class SongrequestRepo extends Repository<SongrequestDTO> {
                 .field("skipped").equal(null);
 
         return q
-                .order("-requested")
+                .order("requested")
                 .asList();
     }
 
