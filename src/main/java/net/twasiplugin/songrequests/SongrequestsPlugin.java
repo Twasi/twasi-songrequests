@@ -1,6 +1,6 @@
 package net.twasiplugin.songrequests;
 
-import net.twasi.core.api.ws.TwasiWebsocketEndpoint;
+import net.twasi.core.api.ws.api.TwasiWebsocketEndpoint;
 import net.twasi.core.plugin.TwasiPlugin;
 import net.twasi.core.plugin.api.TwasiUserPlugin;
 import net.twasi.core.services.ServiceRegistry;

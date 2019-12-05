@@ -9,11 +9,11 @@ import com.wrapper.spotify.model_objects.credentials.AuthorizationCodeCredential
 import com.wrapper.spotify.requests.authorization.authorization_code.AuthorizationCodeRefreshRequest;
 import com.wrapper.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
 import com.wrapper.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
-import net.twasi.core.api.ws.TwasiWebsocketEndpoint;
-import net.twasi.core.api.ws.WebsocketClientConfig;
-import net.twasi.core.api.ws.WebsocketHandledException;
+import net.twasi.core.api.ws.api.TwasiWebsocketEndpoint;
+import net.twasi.core.api.ws.api.WebsocketClientConfig;
 import net.twasi.core.api.ws.models.TwasiWebsocketAnswer;
 import net.twasi.core.api.ws.models.TwasiWebsocketMessage;
+import net.twasi.core.api.ws.models.WebsocketHandledException;
 import net.twasi.core.database.models.User;
 import net.twasi.core.services.providers.DataService;
 import net.twasiplugin.songrequests.database.models.SpotifyCredentialsDTO;

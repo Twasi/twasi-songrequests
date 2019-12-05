@@ -2,9 +2,9 @@ package net.twasiplugin.songrequests.api.ws.songrequest;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.twasi.core.api.ws.TwasiWebsocketEvent;
-import net.twasi.core.api.ws.TwasiWebsocketListenerEndpoint;
+import net.twasi.core.api.ws.api.TwasiWebsocketListenerEndpoint;
 import net.twasi.core.api.ws.models.TwasiWebsocketAnswer;
+import net.twasi.core.api.ws.models.TwasiWebsocketEvent;
 import net.twasi.core.api.ws.models.TwasiWebsocketMessage;
 import net.twasi.core.database.models.TwitchAccount;
 import net.twasiplugin.songrequests.api.ws.songrequest.models.SongDTO;
