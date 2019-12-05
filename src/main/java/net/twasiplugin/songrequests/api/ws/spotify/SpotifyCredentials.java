@@ -107,7 +107,7 @@ public class SpotifyCredentials extends TwasiWebsocketEndpoint<WebsocketClientCo
         return ob;
     }
 
-    private Date getValidUntil(int expiresIn) {
+    public static Date getValidUntil(int expiresIn) {
         return new Date(Calendar.getInstance().getTime().getTime() + (expiresIn - 60) * 1000);
     }
 }
