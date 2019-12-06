@@ -77,7 +77,7 @@ public class SpotifyCredentials extends TwasiWebsocketEndpoint<WebsocketClientCo
         long now = Calendar.getInstance().getTime().getTime();
         try {
             SpotifyCredentialsDTO dto = DataService.get().get(SpotifyCredentialsRepo.class).getByUser(msg.getClient().getAuthentication().getUser());
-            if ((now - 10 * 60 * 1000) > dto.getValidUntil().getTime()) return refresh(msg);
+            if (now > (dto.getValidUntil().getTime()  - 10 * 60 * 1000)) return refresh(msg);
             return getAnswerFromDTO(dto);
         } catch (NullPointerException e) {
             return TwasiWebsocketAnswer.warn("NO_CREDENTIALS_FOUND");
