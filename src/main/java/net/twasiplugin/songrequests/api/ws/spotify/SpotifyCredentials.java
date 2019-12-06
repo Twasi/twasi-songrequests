@@ -45,8 +45,15 @@ public class SpotifyCredentials extends TwasiWebsocketEndpoint<WebsocketClientCo
                 return get(msg);
             case "set":
                 return set(msg);
+            case "remove":
+                return remove(msg);
         }
         return TwasiWebsocketAnswer.warn("No valid request type delivered.");
+    }
+
+    private JsonElement remove(TwasiWebsocketMessage msg) {
+        repo.removeByUser(msg.getClient().getAuthentication().getUser());
+        return TwasiWebsocketAnswer.success();
     }
 
     private JsonElement refresh(TwasiWebsocketMessage msg) throws IOException {
@@ -77,7 +84,7 @@ public class SpotifyCredentials extends TwasiWebsocketEndpoint<WebsocketClientCo
         long now = Calendar.getInstance().getTime().getTime();
         try {
             SpotifyCredentialsDTO dto = DataService.get().get(SpotifyCredentialsRepo.class).getByUser(msg.getClient().getAuthentication().getUser());
-            if (now > (dto.getValidUntil().getTime()  - 10 * 60 * 1000)) return refresh(msg);
+            if (now > (dto.getValidUntil().getTime() - 10 * 60 * 1000)) return refresh(msg);
             return getAnswerFromDTO(dto);
         } catch (NullPointerException e) {
             return TwasiWebsocketAnswer.warn("NO_CREDENTIALS_FOUND");
