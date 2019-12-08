@@ -79,6 +79,7 @@ public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<Son
         switch (provider) {
             case YOUTUBE:
             default:
+
                 return null;
             case SPOTIFY:
                 // Check token
