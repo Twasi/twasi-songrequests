@@ -53,6 +53,10 @@ public class SongrequestDTO extends BaseEntity {
         this.skipped = Calendar.getInstance().getTime();
     }
 
+    public void resetSkipped() {
+        this.skipped = null;
+    }
+
     public boolean isPlayed() {
         return played != null;
     }
@@ -63,6 +67,10 @@ public class SongrequestDTO extends BaseEntity {
 
     public void setPlayed() {
         this.played = Calendar.getInstance().getTime();
+    }
+
+    public void resetPlayed() {
+        this.played = null;
     }
 
     public Date getRequested() {

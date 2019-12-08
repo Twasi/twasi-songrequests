@@ -109,7 +109,14 @@ public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<Son
     }
 
     private JsonElement back(User user) {
-        return null;
+        List<SongrequestDTO> playedSongs = repo.getRequestsByUser(user, true);
+        if (playedSongs.size() == 0) return TwasiWebsocketAnswer.warn("There are no songs you could go back to.");
+        SongrequestDTO last = playedSongs.get(0);
+        last.resetPlayed();
+        last.resetSkipped();
+        repo.commit(last);
+        updateQueue(user);
+        return TwasiWebsocketAnswer.success();
     }
 
     private JsonElement next(User user, boolean skip) {
