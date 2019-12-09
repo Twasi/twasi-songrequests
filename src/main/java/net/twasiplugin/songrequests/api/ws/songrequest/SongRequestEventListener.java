@@ -56,7 +56,12 @@ public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<Son
             case "back":
                 return this.back(user);
             case "queue":
-                return TwasiWebsocketAnswer.success(new Gson().toJsonTree(getResolvedQueue(getQueue(user))));
+                return TwasiWebsocketAnswer.success(new Gson().toJsonTree(
+                        new QueueUpdate(
+                                getResolvedQueue(getQueue(user)),
+                                getResolvedHistory(getHistory(user))
+                        )
+                ));
             case "add":
                 return this.add(msg, user);
             case "search":
@@ -189,18 +194,44 @@ public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<Son
     }
 
     public void updateQueue(User user) {
-        publish(user.getTwitchAccount(), new TwasiWebsocketEvent<>(getResolvedQueue(getQueue(user)), "queue").toSendable());
+        publish(user.getTwitchAccount(), new TwasiWebsocketEvent<>(
+                new QueueUpdate(getResolvedQueue(getQueue(user)), getResolvedHistory(getHistory(user))),
+                "queue"
+        ).toSendable());
     }
 
     private List<SongrequestDTO> getQueue(User user) {
         return repo.getRequestsByUser(user, false);
     }
 
+    private List<SongrequestDTO> getHistory(User user) {
+        return repo.getRequestsByUser(user, true, 10);
+    }
+
     private List<SongDTO> getResolvedQueue(List<SongrequestDTO> queue) {
         return queue.stream().map(SongrequestDTO::getSong).collect(Collectors.toList());
     }
 
+    private List<SongDTO> getResolvedHistory(List<SongrequestDTO> history) {
+        return history.stream().map(dto -> {
+            SongDTO song = dto.getSong();
+            song.playInformation.played = dto.getPlayed();
+            song.playInformation.skipped = dto.getSkipped();
+            return song;
+        }).collect(Collectors.toList());
+    }
+
     private void publish(TwitchAccount channel, JsonElement element) {
         publishFilteredByConfig(config -> config.channel.equalsIgnoreCase(channel.getTwitchId()) || config.channel.equalsIgnoreCase(channel.getUserName()), element);
+    }
+
+    private static class QueueUpdate {
+        public List<SongDTO> queue;
+        public List<SongDTO> history;
+
+        public QueueUpdate(List<SongDTO> queue, List<SongDTO> history) {
+            this.queue = queue;
+            this.history = history;
+        }
     }
 }

@@ -13,10 +13,7 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -31,6 +28,7 @@ public class SongDTO {
     public String uri;
     public int duration;
     public long timeStamp;
+    public PlayInformation playInformation = new PlayInformation();
 
     public SongDTO(ObjectId userId, RequesterDTO requester, String songName, List<String> artists, List<String> covers, SongRequestProvider provider, String uri, int duration, long timeStamp) {
         this.userId = userId;
@@ -94,5 +92,12 @@ public class SongDTO {
         Video video = durations.stream().filter(item2 -> item.getId().getVideoId().equals(item2.getId())).findAny().get();
         long l = Duration.parse(video.getContentDetails().getDuration()).toMillis();
         return from(item, (int) l, requesterDTO, id);
+    }
+
+    public static class PlayInformation {
+
+        public Date played = null;
+        public Date skipped = null;
+
     }
 }
