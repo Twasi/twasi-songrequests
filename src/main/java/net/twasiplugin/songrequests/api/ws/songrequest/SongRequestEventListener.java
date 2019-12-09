@@ -32,6 +32,7 @@ import net.twasiplugin.songrequests.youtube.YouTubeApiBuilder;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -215,8 +216,10 @@ public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<Son
     private List<SongDTO> getResolvedHistory(List<SongrequestDTO> history) {
         return history.stream().map(dto -> {
             SongDTO song = dto.getSong();
-            song.playInformation.played = dto.getPlayed();
-            song.playInformation.skipped = dto.getSkipped();
+            Date played = dto.getPlayed();
+            Date skipped = dto.getSkipped();
+            song.playInformation.played = played != null ? played.getTime() : -1L;
+            song.playInformation.skipped = skipped != null ? skipped.getTime() : -1L;
             return song;
         }).collect(Collectors.toList());
     }

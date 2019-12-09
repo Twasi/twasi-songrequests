@@ -96,8 +96,8 @@ public class SongDTO {
 
     public static class PlayInformation {
 
-        public Date played = null;
-        public Date skipped = null;
+        public long played = -1L;
+        public long skipped = -1L;
 
     }
 }
