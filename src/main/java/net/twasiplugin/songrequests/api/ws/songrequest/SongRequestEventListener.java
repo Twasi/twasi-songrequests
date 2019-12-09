@@ -1,5 +1,8 @@
 package net.twasiplugin.songrequests.api.ws.songrequest;
 
+import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.SearchResult;
+import com.google.api.services.youtube.model.Video;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -23,6 +26,7 @@ import net.twasiplugin.songrequests.api.ws.songrequest.models.SongDTO;
 import net.twasiplugin.songrequests.database.models.SongrequestDTO;
 import net.twasiplugin.songrequests.database.repos.SongrequestRepo;
 import net.twasiplugin.songrequests.spotify.SpotifyApiBuilder;
+import net.twasiplugin.songrequests.youtube.YouTubeApiBuilder;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -79,8 +83,25 @@ public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<Son
         switch (provider) {
             case YOUTUBE:
             default:
+                YouTube.Search.List ySearchApi = YouTubeApiBuilder.buildSearch();
+                ySearchApi.setQ(query);
+                List<SearchResult> searchResponse = ySearchApi.execute().getItems();
 
-                return null;
+                YouTube.Videos.List yDetailsApi = YouTubeApiBuilder.buildContentDetails();
+                yDetailsApi.setId(searchResponse.stream().map(item -> item.getId().getVideoId()).collect(Collectors.joining(",")));
+                List<Video> durations = yDetailsApi.execute().getItems();
+
+                return TwasiWebsocketAnswer.success(new Gson().toJsonTree(
+                        searchResponse.stream().map(item -> SongDTO.from(
+                                item,
+                                durations,
+                                null,
+                                user.getId()
+                        )).collect(Collectors.toList())
+                ));
+            // searchResponse.getItems().stream().map(res -> SongDTO.from(res, (RequesterDTO) null, user.getId())).collect(Collectors.toList());
+
+            // return null;
             case SPOTIFY:
                 // Check token
                 if (!request.has("token"))
@@ -88,8 +109,8 @@ public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<Son
                 String token = request.get("token").getAsString();
 
                 // Build api and set token
-                SpotifyApi api = SpotifyApiBuilder.build();
-                api.setAccessToken(token);
+                SpotifyApi sApi = SpotifyApiBuilder.build();
+                sApi.setAccessToken(token);
                 int page = 1;
 
                 // Get requested page or set 1 if none provided
@@ -97,13 +118,13 @@ public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<Son
                 if (page < 1) page = 1;
 
                 // Build query
-                SearchTracksRequest.Builder songs = api.searchTracks(query).limit(5).offset((page - 1) * 5);
+                SearchTracksRequest.Builder songs = sApi.searchTracks(query).limit(5).offset((page - 1) * 5);
 
                 // Execute query
                 Paging<Track> execute = songs.build().execute();
 
                 // Map result
-                List<Object> list = Arrays.stream(execute.getItems()).map(track -> SongDTO.from(track, (RequesterDTO) null, user.getId())).collect(Collectors.toList());
+                List<SongDTO> list = Arrays.stream(execute.getItems()).map(track -> SongDTO.from(track, (RequesterDTO) null, user.getId())).collect(Collectors.toList());
                 return TwasiWebsocketAnswer.success(new Gson().toJsonTree(list));
         }
     }

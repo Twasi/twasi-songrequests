@@ -1,5 +1,7 @@
 package net.twasiplugin.songrequests.api.ws.songrequest.models;
 
+import com.google.api.services.youtube.model.SearchResult;
+import com.google.api.services.youtube.model.Video;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.wrapper.spotify.model_objects.specification.ArtistSimplified;
@@ -10,8 +12,10 @@ import net.twasiplugin.songrequests.SongRequestProvider;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +48,7 @@ public class SongDTO {
         this(userId, requester, songName, artists, covers, provider, uri, duration, Calendar.getInstance().getTime().getTime());
     }
 
+    // Default constructor for Morphia
     public SongDTO() {
     }
 
@@ -66,5 +71,28 @@ public class SongDTO {
                 spotifyTrack.getUri(),
                 spotifyTrack.getDurationMs()
         );
+    }
+
+    public static SongDTO from(SearchResult youTubeTrack, int duration, TwitchAccount requester, ObjectId user) {
+        return from(youTubeTrack, duration, RequesterDTO.from(requester), user);
+    }
+
+    public static SongDTO from(SearchResult youTubeTrack, int duration, RequesterDTO requester, ObjectId user) {
+        return new SongDTO(
+                user,
+                requester,
+                youTubeTrack.getSnippet().getTitle(),
+                Collections.singletonList(youTubeTrack.getSnippet().getChannelTitle()),
+                Collections.singletonList(youTubeTrack.getSnippet().getThumbnails().getDefault().getUrl()),
+                SongRequestProvider.YOUTUBE,
+                youTubeTrack.getId().getVideoId(),
+                duration
+        );
+    }
+
+    public static Object from(SearchResult item, List<Video> durations, RequesterDTO requesterDTO, ObjectId id) {
+        Video video = durations.stream().filter(item2 -> item.getId().getVideoId().equals(item2.getId())).findAny().get();
+        long l = Duration.parse(video.getContentDetails().getDuration()).toMillis();
+        return from(item, (int) l, requesterDTO, id);
     }
 }
