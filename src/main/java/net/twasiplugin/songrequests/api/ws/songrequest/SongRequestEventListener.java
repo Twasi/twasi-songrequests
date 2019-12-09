@@ -23,7 +23,9 @@ import net.twasi.core.services.providers.DataService;
 import net.twasiplugin.songrequests.SongRequestProvider;
 import net.twasiplugin.songrequests.api.ws.songrequest.models.RequesterDTO;
 import net.twasiplugin.songrequests.api.ws.songrequest.models.SongDTO;
+import net.twasiplugin.songrequests.database.models.ReportDTO;
 import net.twasiplugin.songrequests.database.models.SongrequestDTO;
+import net.twasiplugin.songrequests.database.repos.ReportRepo;
 import net.twasiplugin.songrequests.database.repos.SongrequestRepo;
 import net.twasiplugin.songrequests.spotify.SpotifyApiBuilder;
 import net.twasiplugin.songrequests.youtube.YouTubeApiBuilder;
@@ -59,8 +61,17 @@ public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<Son
                 return this.add(msg, user);
             case "search":
                 return this.search(msg, user);
+            case "report":
+                return this.report(msg, user);
         }
         return TwasiWebsocketAnswer.warn("No valid request type delivered.");
+    }
+
+    private JsonElement report(TwasiWebsocketMessage msg, User user) {
+        ReportDTO dto = new Gson().fromJson(msg.getAction().getAsJsonObject().get("report").getAsJsonObject(), ReportDTO.class);
+        dto.user = user.getId();
+        DataService.get().get(ReportRepo.class).add(dto);
+        return TwasiWebsocketAnswer.success();
     }
 
     private JsonElement search(TwasiWebsocketMessage msg, User user) throws IOException, SpotifyWebApiException {
