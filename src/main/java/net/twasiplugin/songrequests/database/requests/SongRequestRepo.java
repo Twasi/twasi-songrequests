@@ -1,14 +1,16 @@
-package net.twasiplugin.songrequests.database.repos;
+package net.twasiplugin.songrequests.database.requests;
 
 import net.twasi.core.database.lib.Repository;
 import net.twasi.core.database.models.User;
-import net.twasiplugin.songrequests.database.models.SongrequestDTO;
+import net.twasiplugin.songrequests.api.ws.songrequest.models.SongDTO;
+import net.twasiplugin.songrequests.database.requests.exceptions.DuplicateSongException;
+import net.twasiplugin.songrequests.database.requests.exceptions.TooManyRequestsException;
 import org.mongodb.morphia.query.FindOptions;
 import org.mongodb.morphia.query.Query;
 
 import java.util.List;
 
-public class SongrequestRepo extends Repository<SongrequestDTO> {
+public class SongRequestRepo extends Repository<SongRequestDTO> {
 
     /**
      * Function to get songrequest entities from database
@@ -17,7 +19,7 @@ public class SongrequestRepo extends Repository<SongrequestDTO> {
      * @param played Whether to get already played or queued songs
      * @return A list of songrequests
      */
-    public List<SongrequestDTO> getRequestsByUser(User user, boolean played) {
+    public List<SongRequestDTO> getRequestsByUser(User user, boolean played) {
         return buildQuery(user, played).asList();
     }
 
@@ -29,12 +31,12 @@ public class SongrequestRepo extends Repository<SongrequestDTO> {
      * @param amount The amount of songs to query
      * @return A list of songrequests
      */
-    public List<SongrequestDTO> getRequestsByUser(User user, boolean played, int amount) {
+    public List<SongRequestDTO> getRequestsByUser(User user, boolean played, int amount) {
         return buildQuery(user, played).asList(new FindOptions().limit(amount));
     }
 
-    private Query<SongrequestDTO> buildQuery(User user, boolean played) {
-        Query<SongrequestDTO> q = query()
+    private Query<SongRequestDTO> buildQuery(User user, boolean played) {
+        Query<SongRequestDTO> q = query()
                 .field("user").equal(user.getId());
 
         if (played) q
@@ -74,5 +76,28 @@ public class SongrequestRepo extends Repository<SongrequestDTO> {
         return query()
                 .field("user").equal(user.getId())
                 .count();
+    }
+
+    /**
+     * @param songId The id of the entity that should be deleted
+     */
+    public void removeById(String songId, User user) {
+        this.store.findAndDelete(query().field("id").equal(songId).field("user").equal(user.getId()));
+    }
+
+    /**
+     * @param song The song to add
+     * @param user The user to add the song for
+     * @param max  How many songs the user can add at maximum. -1 = infinite
+     * @throws TooManyRequestsException if the user cannot add any more requests
+     * @throws DuplicateSongException   if the song already was requested
+     */
+    public void checkAndAdd(SongDTO song, User user, long max) throws TooManyRequestsException, DuplicateSongException {
+        if (max > 0)
+            if (buildQuery(user, false).field("song.requester.twitchId").equal(song.requester.twitchId).count() > max)
+                throw new TooManyRequestsException();
+        if (buildQuery(user, false).field("song.uri").equal(song.uri).count() > 0)
+            throw new DuplicateSongException();
+        add(new SongRequestDTO(user.getId(), song));
     }
 }

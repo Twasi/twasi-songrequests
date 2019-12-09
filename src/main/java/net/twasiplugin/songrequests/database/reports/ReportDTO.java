@@ -1,4 +1,4 @@
-package net.twasiplugin.songrequests.database.models;
+package net.twasiplugin.songrequests.database.reports;
 
 import net.twasi.core.database.models.BaseEntity;
 import org.bson.types.ObjectId;
@@ -8,14 +8,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-@Entity("songrequest-reports")
+@Entity(noClassnameStored = true, value = "songrequests.reports")
 public class ReportDTO extends BaseEntity {
     public ObjectId user;
     public String message;
-    public List<SpotifyReport> spotifyReports;
+    public List<ReportDetails> spotifyReports;
     public Date timestamp = Calendar.getInstance().getTime();
 
-    public static class SpotifyReport {
+    public static class ReportDetails {
         public String type;
         public String message;
     }

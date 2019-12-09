@@ -1,4 +1,4 @@
-package net.twasiplugin.songrequests.database.models;
+package net.twasiplugin.songrequests.database.spotifycredentials;
 
 import net.twasi.core.database.models.BaseEntity;
 import org.bson.types.ObjectId;
@@ -6,7 +6,7 @@ import org.mongodb.morphia.annotations.Entity;
 
 import java.util.Date;
 
-@Entity("twasi.songrequests.spotify-credentials")
+@Entity(noClassnameStored = true, value = "songrequests.spotify-credentials")
 public class SpotifyCredentialsDTO extends BaseEntity {
 
     private ObjectId user;

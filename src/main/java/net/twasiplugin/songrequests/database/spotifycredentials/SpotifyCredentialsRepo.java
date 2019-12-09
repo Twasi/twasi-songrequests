@@ -1,8 +1,7 @@
-package net.twasiplugin.songrequests.database.repos;
+package net.twasiplugin.songrequests.database.spotifycredentials;
 
 import net.twasi.core.database.lib.Repository;
 import net.twasi.core.database.models.User;
-import net.twasiplugin.songrequests.database.models.SpotifyCredentialsDTO;
 
 public class SpotifyCredentialsRepo extends Repository<SpotifyCredentialsDTO> {
 
@@ -13,5 +12,9 @@ public class SpotifyCredentialsRepo extends Repository<SpotifyCredentialsDTO> {
     public void removeByUser(User user) {
         SpotifyCredentialsDTO dto = getByUser(user);
         if (dto != null) remove(dto);
+    }
+
+    public boolean hasCredentials(User user) {
+        return query().field("user").equal(user.getId()).count() > 0;
     }
 }

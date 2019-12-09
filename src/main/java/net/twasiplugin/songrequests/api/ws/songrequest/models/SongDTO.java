@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 public class SongDTO {
 
     public ObjectId userId;
+    public String id = null;
     public RequesterDTO requester;
     public String name;
     public List<String> artists;
@@ -88,7 +89,7 @@ public class SongDTO {
         );
     }
 
-    public static Object from(SearchResult item, List<Video> durations, RequesterDTO requesterDTO, ObjectId id) {
+    public static SongDTO from(SearchResult item, List<Video> durations, RequesterDTO requesterDTO, ObjectId id) {
         Video video = durations.stream().filter(item2 -> item.getId().getVideoId().equals(item2.getId())).findAny().get();
         long l = Duration.parse(video.getContentDetails().getDuration()).toMillis();
         return from(item, (int) l, requesterDTO, id);

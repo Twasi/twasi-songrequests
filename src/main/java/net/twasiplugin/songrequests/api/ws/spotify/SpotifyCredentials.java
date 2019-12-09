@@ -16,8 +16,8 @@ import net.twasi.core.api.ws.models.TwasiWebsocketMessage;
 import net.twasi.core.api.ws.models.WebsocketHandledException;
 import net.twasi.core.database.models.User;
 import net.twasi.core.services.providers.DataService;
-import net.twasiplugin.songrequests.database.models.SpotifyCredentialsDTO;
-import net.twasiplugin.songrequests.database.repos.SpotifyCredentialsRepo;
+import net.twasiplugin.songrequests.database.spotifycredentials.SpotifyCredentialsDTO;
+import net.twasiplugin.songrequests.database.spotifycredentials.SpotifyCredentialsRepo;
 import net.twasiplugin.songrequests.spotify.SpotifyApiBuilder;
 
 import java.io.IOException;

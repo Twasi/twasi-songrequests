@@ -15,6 +15,7 @@ import java.util.List;
 public class SongrequestsPlugin extends TwasiPlugin<SongrequestsConfig> {
 
     public static SongrequestsConfig CONFIG;
+    public static SongRequestEventListener EVENTS;
 
     @Override
     public void onActivate() {
@@ -30,7 +31,7 @@ public class SongrequestsPlugin extends TwasiPlugin<SongrequestsConfig> {
     public List<TwasiWebsocketEndpoint<?>> getWebsocketEndpoints() {
         return Arrays.asList(
                 new SpotifyCredentials(),
-                new SongRequestEventListener()
+                EVENTS = new SongRequestEventListener()
         );
     }
 }

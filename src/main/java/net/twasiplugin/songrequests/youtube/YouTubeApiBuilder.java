@@ -10,14 +10,18 @@ import java.io.IOException;
 
 public class YouTubeApiBuilder {
 
-    public static List buildSearch() throws IOException {
+    public static List buildSearch(int max) throws IOException {
         YouTube youtube = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), request -> {
         }).setApplicationName("youtube-search").build();
         List list = youtube.search().list("id,snippet");
         list.setKey(SongrequestsPlugin.CONFIG.youTubeApiKey);
         list.setType("video");
-        list.setMaxResults(5L);
+        list.setMaxResults((long) max);
         return list;
+    }
+
+    public static List buildSearch() throws IOException {
+        return buildSearch(5);
     }
 
     public static YouTube.Videos.List buildContentDetails() throws IOException {

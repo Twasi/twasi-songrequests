@@ -1,4 +1,4 @@
-package net.twasiplugin.songrequests.database.models;
+package net.twasiplugin.songrequests.database.requests;
 
 import net.twasi.core.database.models.BaseEntity;
 import net.twasiplugin.songrequests.api.ws.songrequest.models.SongDTO;
@@ -8,8 +8,8 @@ import org.mongodb.morphia.annotations.Entity;
 import java.util.Calendar;
 import java.util.Date;
 
-@Entity("twasi.songrequests.requests")
-public class SongrequestDTO extends BaseEntity {
+@Entity(noClassnameStored = true, value = "songrequests.requests")
+public class SongRequestDTO extends BaseEntity {
 
     private ObjectId user;
     private SongDTO song;
@@ -17,12 +17,12 @@ public class SongrequestDTO extends BaseEntity {
     private Date played = null;
     private Date requested = Calendar.getInstance().getTime();
 
-    public SongrequestDTO(ObjectId user, SongDTO song) {
+    public SongRequestDTO(ObjectId user, SongDTO song) {
         this.user = user;
         this.song = song;
     }
 
-    public SongrequestDTO() {
+    public SongRequestDTO() {
     }
 
     public ObjectId getUser() {

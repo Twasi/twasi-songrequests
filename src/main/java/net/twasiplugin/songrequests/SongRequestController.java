@@ -2,8 +2,8 @@ package net.twasiplugin.songrequests;
 
 import net.twasi.core.database.models.User;
 import net.twasi.core.services.providers.DataService;
-import net.twasiplugin.songrequests.database.models.SongrequestDTO;
-import net.twasiplugin.songrequests.database.repos.SongrequestRepo;
+import net.twasiplugin.songrequests.database.requests.SongRequestDTO;
+import net.twasiplugin.songrequests.database.requests.SongRequestRepo;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
@@ -11,12 +11,12 @@ import java.util.List;
 
 public class SongRequestController {
 
-    private static SongrequestRepo repo = DataService.get().get(SongrequestRepo.class);
+    private static SongRequestRepo repo = DataService.get().get(SongRequestRepo.class);
 
     private User user;
 
-    private SongrequestDTO currentSong;
-    private List<SongrequestDTO> queue;
+    private SongRequestDTO currentSong;
+    private List<SongRequestDTO> queue;
 
     public SongRequestController(User user) {
         this.user = user;
@@ -73,14 +73,14 @@ public class SongRequestController {
     /**
      * @return The current song or null if there is no current song
      */
-    public SongrequestDTO getCurrentSong() {
+    public SongRequestDTO getCurrentSong() {
         return currentSong;
     }
 
     /**
      * @return A list of the next songs
      */
-    public List<SongrequestDTO> getQueue() {
+    public List<SongRequestDTO> getQueue() {
         return queue;
     }
 }

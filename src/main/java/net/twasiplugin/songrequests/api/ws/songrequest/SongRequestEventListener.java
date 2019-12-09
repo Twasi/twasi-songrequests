@@ -1,17 +1,10 @@
 package net.twasiplugin.songrequests.api.ws.songrequest;
 
-import com.google.api.services.youtube.YouTube;
-import com.google.api.services.youtube.model.SearchResult;
-import com.google.api.services.youtube.model.Video;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
-import com.wrapper.spotify.model_objects.specification.Paging;
-import com.wrapper.spotify.model_objects.specification.Track;
-import com.wrapper.spotify.requests.data.search.simplified.SearchTracksRequest;
 import net.twasi.core.api.ws.api.TwasiWebsocketListenerEndpoint;
 import net.twasi.core.api.ws.models.TwasiWebsocketAnswer;
 import net.twasi.core.api.ws.models.TwasiWebsocketEvent;
@@ -23,22 +16,23 @@ import net.twasi.core.services.providers.DataService;
 import net.twasiplugin.songrequests.SongRequestProvider;
 import net.twasiplugin.songrequests.api.ws.songrequest.models.RequesterDTO;
 import net.twasiplugin.songrequests.api.ws.songrequest.models.SongDTO;
-import net.twasiplugin.songrequests.database.models.ReportDTO;
-import net.twasiplugin.songrequests.database.models.SongrequestDTO;
-import net.twasiplugin.songrequests.database.repos.ReportRepo;
-import net.twasiplugin.songrequests.database.repos.SongrequestRepo;
-import net.twasiplugin.songrequests.spotify.SpotifyApiBuilder;
-import net.twasiplugin.songrequests.youtube.YouTubeApiBuilder;
+import net.twasiplugin.songrequests.database.reports.ReportDTO;
+import net.twasiplugin.songrequests.database.reports.ReportRepo;
+import net.twasiplugin.songrequests.database.requests.SongRequestDTO;
+import net.twasiplugin.songrequests.database.requests.SongRequestRepo;
+import net.twasiplugin.songrequests.database.usersettings.SongRequestSettingsDTO;
+import net.twasiplugin.songrequests.database.usersettings.SongRequestSettingsRepo;
+import net.twasiplugin.songrequests.spotify.SpotifySearch;
+import net.twasiplugin.songrequests.youtube.YouTubeSearch;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<SongRequestEventListenerConfig> {
 
-    private static SongrequestRepo repo = DataService.get().get(SongrequestRepo.class);
+    private static SongRequestRepo repo = DataService.get().get(SongRequestRepo.class);
 
     public String getTopic() {
         return "events";
@@ -69,8 +63,29 @@ public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<Son
                 return this.search(msg, user);
             case "report":
                 return this.report(msg, user);
+            case "settings":
+                return this.settings(msg, user);
+            case "remove":
+                return this.remove(msg, user);
         }
         return TwasiWebsocketAnswer.warn("No valid request type delivered.");
+    }
+
+    private JsonElement remove(TwasiWebsocketMessage msg, User user) {
+        repo.removeById(msg.getAction().getAsJsonObject().get("songId").getAsString(), user);
+        this.updateQueue(user);
+        return TwasiWebsocketAnswer.success();
+    }
+
+    private JsonElement settings(TwasiWebsocketMessage msg, User user) {
+        SongRequestSettingsRepo repo = DataService.get().get(SongRequestSettingsRepo.class);
+        SongRequestSettingsDTO dto = repo.getByUser(user);
+        JsonObject action = msg.getAction().getAsJsonObject();
+        if (action.has("settings")) {
+            dto.apply(action.get("settings").getAsJsonObject());
+            repo.commit(dto);
+        }
+        return TwasiWebsocketAnswer.success(new Gson().toJsonTree(dto));
     }
 
     private JsonElement report(TwasiWebsocketMessage msg, User user) {
@@ -100,56 +115,21 @@ public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<Son
         switch (provider) {
             case YOUTUBE:
             default:
-                YouTube.Search.List ySearchApi = YouTubeApiBuilder.buildSearch();
-                ySearchApi.setQ(query);
-                List<SearchResult> searchResponse = ySearchApi.execute().getItems();
-
-                YouTube.Videos.List yDetailsApi = YouTubeApiBuilder.buildContentDetails();
-                yDetailsApi.setId(searchResponse.stream().map(item -> item.getId().getVideoId()).collect(Collectors.joining(",")));
-                List<Video> durations = yDetailsApi.execute().getItems();
-
                 return TwasiWebsocketAnswer.success(new Gson().toJsonTree(
-                        searchResponse.stream().map(item -> SongDTO.from(
-                                item,
-                                durations,
-                                null,
-                                user.getId()
-                        )).collect(Collectors.toList())
+                        new YouTubeSearch(query, user)
                 ));
-            // searchResponse.getItems().stream().map(res -> SongDTO.from(res, (RequesterDTO) null, user.getId())).collect(Collectors.toList());
 
-            // return null;
             case SPOTIFY:
-                // Check token
-                if (!request.has("token"))
-                    throw new WebsocketHandledException("No token provided.");
-                String token = request.get("token").getAsString();
-
-                // Build api and set token
-                SpotifyApi sApi = SpotifyApiBuilder.build();
-                sApi.setAccessToken(token);
-                int page = 1;
-
-                // Get requested page or set 1 if none provided
-                if (request.has("page")) page = request.get("page").getAsInt();
-                if (page < 1) page = 1;
-
-                // Build query
-                SearchTracksRequest.Builder songs = sApi.searchTracks(query).limit(5).offset((page - 1) * 5);
-
-                // Execute query
-                Paging<Track> execute = songs.build().execute();
-
-                // Map result
-                List<SongDTO> list = Arrays.stream(execute.getItems()).map(track -> SongDTO.from(track, (RequesterDTO) null, user.getId())).collect(Collectors.toList());
-                return TwasiWebsocketAnswer.success(new Gson().toJsonTree(list));
+                return TwasiWebsocketAnswer.success(new Gson().toJsonTree(
+                        new SpotifySearch(query, user)
+                ));
         }
     }
 
     private JsonElement back(User user) {
-        List<SongrequestDTO> playedSongs = repo.getRequestsByUser(user, true);
+        List<SongRequestDTO> playedSongs = repo.getRequestsByUser(user, true);
         if (playedSongs.size() == 0) return TwasiWebsocketAnswer.warn("There are no songs you could go back to.");
-        SongrequestDTO last = playedSongs.get(0);
+        SongRequestDTO last = playedSongs.get(0);
         last.resetPlayed();
         last.resetSkipped();
         repo.commit(last);
@@ -158,9 +138,9 @@ public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<Son
     }
 
     private JsonElement next(User user, boolean skip) {
-        List<SongrequestDTO> queue = getQueue(user);
+        List<SongRequestDTO> queue = getQueue(user);
         if (queue.size() > 0) {
-            SongrequestDTO update = queue.get(0);
+            SongRequestDTO update = queue.get(0);
             if (skip) update.setSkipped();
             else update.setPlayed();
             repo.commit(update);
@@ -181,7 +161,7 @@ public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<Son
             } catch (Exception ignored) {
             }
             SongDTO dto = new Gson().fromJson(song, SongDTO.class);
-            SongrequestDTO songrequestDTO = new SongrequestDTO(user.getId(), dto);
+            SongRequestDTO songrequestDTO = new SongRequestDTO(user.getId(), dto);
             this.add(songrequestDTO, user);
             return TwasiWebsocketAnswer.success();
         } catch (JsonParseException e) {
@@ -189,7 +169,7 @@ public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<Son
         }
     }
 
-    private void add(SongrequestDTO song, User user) {
+    private void add(SongRequestDTO song, User user) {
         repo.add(song);
         updateQueue(user);
     }
@@ -201,19 +181,19 @@ public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<Son
         ).toSendable());
     }
 
-    private List<SongrequestDTO> getQueue(User user) {
+    private List<SongRequestDTO> getQueue(User user) {
         return repo.getRequestsByUser(user, false);
     }
 
-    private List<SongrequestDTO> getHistory(User user) {
+    private List<SongRequestDTO> getHistory(User user) {
         return repo.getRequestsByUser(user, true, 10);
     }
 
-    private List<SongDTO> getResolvedQueue(List<SongrequestDTO> queue) {
-        return queue.stream().map(SongrequestDTO::getSong).collect(Collectors.toList());
+    private List<SongDTO> getResolvedQueue(List<SongRequestDTO> queue) {
+        return queue.stream().map(SongRequestDTO::getSong).collect(Collectors.toList());
     }
 
-    private List<SongDTO> getResolvedHistory(List<SongrequestDTO> history) {
+    private List<SongDTO> getResolvedHistory(List<SongRequestDTO> history) {
         return history.stream().map(dto -> {
             SongDTO song = dto.getSong();
             Date played = dto.getPlayed();
