@@ -1,0 +1,8 @@
+help={sender.displayName}, du kannst dir mit dem Befehl "!sr [spotify/youtube] (Song Name)" einen Song wünschen 4Head
+error=Es ist ein Fehler aufgetreten :(
+nothing-found=Für "{query}" wurde keine Song gefunden BibleThump
+too-many-requests={sender.displayName}, du hast dir bereits zu viele Songs gewünscht ({maxRequests}) SwiftRage
+duplicate-song={sender.displayName}, dieser Song wurde sich bereits gewünscht! DansGame
+success=Der Song "{song.name}" von {song.artists.0} wurde erfolgreich hinzugefügt! Kreygasm
+skip.success=Der Song "{song.name}" wurde übersprungen LUL
+skip.no-song=Es ist kein Song in der Liste, der übersprungen werden könnte, {sender.displayName} WutFace

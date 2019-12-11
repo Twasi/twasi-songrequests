@@ -79,6 +79,7 @@ public class SongRequestCommand extends TwasiPluginCommand {
             RequesterDTO requester = RequesterDTO.from(event.getSender());
             songs = provider == SPOTIFY ? new SpotifySearch(name, requester, user, 1) : new YouTubeSearch(name, requester, user, 1);
         } catch (UnauthorizedException e) {
+            // TODO find correct Exception (UnauthorizedException isn't it)
             event.reply(renderer.render("spotify-reauth"));
             credentialsRepo.removeByUser(user);
             return false;

@@ -144,7 +144,6 @@ public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<Son
             if (skip) update.setSkipped();
             else update.setPlayed();
             repo.commit(update);
-            queue.remove(0);
         }
         updateQueue(user);
         return TwasiWebsocketAnswer.success();
@@ -181,7 +180,7 @@ public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<Son
         ).toSendable());
     }
 
-    private List<SongRequestDTO> getQueue(User user) {
+    public List<SongRequestDTO> getQueue(User user) {
         return repo.getRequestsByUser(user, false);
     }
 
