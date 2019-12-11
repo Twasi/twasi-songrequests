@@ -22,8 +22,8 @@ import net.twasiplugin.songrequests.database.requests.SongRequestDTO;
 import net.twasiplugin.songrequests.database.requests.SongRequestRepo;
 import net.twasiplugin.songrequests.database.usersettings.SongRequestSettingsDTO;
 import net.twasiplugin.songrequests.database.usersettings.SongRequestSettingsRepo;
-import net.twasiplugin.songrequests.spotify.SpotifySearch;
-import net.twasiplugin.songrequests.youtube.YouTubeSearch;
+import net.twasiplugin.songrequests.providers.spotify.SpotifySearch;
+import net.twasiplugin.songrequests.providers.youtube.YouTubeSearch;
 
 import java.io.IOException;
 import java.util.Date;

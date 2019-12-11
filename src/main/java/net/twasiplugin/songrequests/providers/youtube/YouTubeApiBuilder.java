@@ -1,4 +1,4 @@
-package net.twasiplugin.songrequests.youtube;
+package net.twasiplugin.songrequests.providers.youtube;
 
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;

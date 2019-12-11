@@ -17,8 +17,8 @@ import net.twasiplugin.songrequests.database.requests.exceptions.DuplicateSongEx
 import net.twasiplugin.songrequests.database.requests.exceptions.TooManyRequestsException;
 import net.twasiplugin.songrequests.database.spotifycredentials.SpotifyCredentialsRepo;
 import net.twasiplugin.songrequests.database.usersettings.SongRequestSettingsRepo;
-import net.twasiplugin.songrequests.spotify.SpotifySearch;
-import net.twasiplugin.songrequests.youtube.YouTubeSearch;
+import net.twasiplugin.songrequests.providers.spotify.SpotifySearch;
+import net.twasiplugin.songrequests.providers.youtube.YouTubeSearch;
 
 import java.util.Collections;
 import java.util.List;

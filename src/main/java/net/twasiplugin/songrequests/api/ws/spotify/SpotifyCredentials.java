@@ -18,7 +18,7 @@ import net.twasi.core.database.models.User;
 import net.twasi.core.services.providers.DataService;
 import net.twasiplugin.songrequests.database.spotifycredentials.SpotifyCredentialsDTO;
 import net.twasiplugin.songrequests.database.spotifycredentials.SpotifyCredentialsRepo;
-import net.twasiplugin.songrequests.spotify.SpotifyApiBuilder;
+import net.twasiplugin.songrequests.providers.spotify.SpotifyApiBuilder;
 
 import java.io.IOException;
 import java.util.Calendar;

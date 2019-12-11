@@ -27,11 +27,12 @@ public class SongDTO {
     public List<String> covers;
     public int provider;
     public String uri;
+    public String url;
     public int duration;
     public long timeStamp;
     public PlayInformation playInformation = new PlayInformation();
 
-    public SongDTO(ObjectId userId, RequesterDTO requester, String songName, List<String> artists, List<String> covers, SongRequestProvider provider, String uri, int duration, long timeStamp) {
+    public SongDTO(ObjectId userId, RequesterDTO requester, String songName, List<String> artists, List<String> covers, SongRequestProvider provider, String uri, String url, int duration, long timeStamp) {
         this.userId = userId;
         this.requester = requester;
         this.name = songName;
@@ -39,12 +40,13 @@ public class SongDTO {
         this.covers = covers;
         this.provider = provider.getFrontendId();
         this.uri = uri;
+        this.url = url;
         this.duration = duration;
         this.timeStamp = timeStamp;
     }
 
-    public SongDTO(ObjectId userId, RequesterDTO requester, String songName, List<String> artists, List<String> covers, SongRequestProvider provider, String uri, int duration) {
-        this(userId, requester, songName, artists, covers, provider, uri, duration, Calendar.getInstance().getTime().getTime());
+    public SongDTO(ObjectId userId, RequesterDTO requester, String songName, List<String> artists, List<String> covers, SongRequestProvider provider, String uri, String url, int duration) {
+        this(userId, requester, songName, artists, covers, provider, uri, url, duration, Calendar.getInstance().getTime().getTime());
     }
 
     // Default constructor for Morphia
@@ -68,6 +70,7 @@ public class SongDTO {
                 Arrays.stream(spotifyTrack.getAlbum().getImages()).map((Image::getUrl)).collect(Collectors.toList()),
                 SongRequestProvider.SPOTIFY,
                 spotifyTrack.getUri(),
+                spotifyTrack.getLinkedFrom().getUri(),
                 spotifyTrack.getDurationMs()
         );
     }
@@ -85,6 +88,7 @@ public class SongDTO {
                 Collections.singletonList(youTubeTrack.getSnippet().getThumbnails().getDefault().getUrl()),
                 SongRequestProvider.YOUTUBE,
                 youTubeTrack.getId().getVideoId(),
+                "https://youtube.com/watch?v=" + youTubeTrack.getId().getVideoId(),
                 duration
         );
     }

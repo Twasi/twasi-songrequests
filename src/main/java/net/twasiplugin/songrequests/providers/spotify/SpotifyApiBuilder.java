@@ -1,4 +1,4 @@
-package net.twasiplugin.songrequests.spotify;
+package net.twasiplugin.songrequests.providers.spotify;
 
 import com.wrapper.spotify.SpotifyApi;
 
