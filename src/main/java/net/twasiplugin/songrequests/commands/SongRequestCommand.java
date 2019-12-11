@@ -25,7 +25,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static net.twasiplugin.songrequests.SongRequestProvider.*;
+import static net.twasiplugin.songrequests.SongRequestProvider.SPOTIFY;
+import static net.twasiplugin.songrequests.SongRequestProvider.YOUTUBE;
 
 public class SongRequestCommand extends TwasiPluginCommand {
 
@@ -52,7 +53,7 @@ public class SongRequestCommand extends TwasiPluginCommand {
         User user = event.getStreamer().getUser();
 
         String name = event.getArgsAsOne();
-        TranslationRenderer renderer = event.getRenderer();
+        TranslationRenderer renderer = event.getRenderer(/*"songrequests"*/);
 
         if (name.length() == 0) {
             event.reply(renderer.render("help"));
@@ -76,8 +77,7 @@ public class SongRequestCommand extends TwasiPluginCommand {
 
         ProviderSearch songs;
         try {
-            RequesterDTO requester = RequesterDTO.from(event.getSender());
-            songs = provider == SPOTIFY ? new SpotifySearch(name, requester, user, 1) : new YouTubeSearch(name, requester, user, 1);
+            songs = provider == SPOTIFY ? new SpotifySearch(name, user, 1) : new YouTubeSearch(name, user, 1);
         } catch (UnauthorizedException e) {
             // TODO find correct Exception (UnauthorizedException isn't it)
             event.reply(renderer.render("spotify-reauth"));
@@ -94,6 +94,8 @@ public class SongRequestCommand extends TwasiPluginCommand {
         }
         SongDTO song = songs.get(0);
         renderer.bindObject("song", song);
+
+        song.requester = RequesterDTO.from(event.getSender());
 
         long maxRequests = getMaxRequests(event.getSender().getGroups(), user);
         renderer.bind("maxRequests", String.valueOf(maxRequests));

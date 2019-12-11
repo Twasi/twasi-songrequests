@@ -25,8 +25,7 @@ import static net.twasiplugin.songrequests.api.ws.spotify.SpotifyCredentials.get
 
 public class SpotifySearch extends ProviderSearch {
 
-    public SpotifySearch(String query, RequesterDTO requester, User user, int max) throws IOException, SpotifyWebApiException {
-        super(requester);
+    public SpotifySearch(String query, User user, int max) throws IOException, SpotifyWebApiException {
         ProviderSearch cachedResult = getCachedResult(query);
         if (cachedResult != null) {
             addAll(cachedResult);
@@ -55,22 +54,14 @@ public class SpotifySearch extends ProviderSearch {
         Paging<Track> execute = songs.build().execute();
 
         // Map result
-        List<SongDTO> list = Arrays.stream(execute.getItems()).map(track -> SongDTO.from(track, requester, user.getId())).collect(Collectors.toList());
+        List<SongDTO> list = Arrays.stream(execute.getItems()).map(track -> SongDTO.from(track, (RequesterDTO) null, user.getId())).collect(Collectors.toList());
         addAll(list);
 
         cache(query, this);
     }
 
-    public SpotifySearch(String query, User user, int max) throws IOException, SpotifyWebApiException {
-        this(query, null, user, max);
-    }
-
-    public SpotifySearch(String query, RequesterDTO requester, User user) throws IOException, SpotifyWebApiException {
-        this(query, requester, user, 5);
-    }
-
     public SpotifySearch(String query, User user) throws IOException, SpotifyWebApiException {
-        this(query, null, user, 5);
+        this(query, user, 5);
     }
 
     @Override

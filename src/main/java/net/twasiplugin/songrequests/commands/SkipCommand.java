@@ -36,16 +36,16 @@ public class SkipCommand extends TwasiPluginCommand {
 
     @Override
     protected boolean execute(TwasiCustomCommandEvent event) {
-        TranslationRenderer renderer = event.getRenderer();
+        TranslationRenderer renderer = event.getRenderer(/*"skip"*/);
         List<SongRequestDTO> queue = EVENTS.getQueue(this.twasiUserPlugin.getTwasiInterface().getStreamer().getUser());
         if (queue.size() > 0) {
             SongRequestDTO update = queue.get(0);
             renderer.bindObject("song", update.getSong());
             update.setSkipped();
             DataService.get().get(SongRequestRepo.class).commit(update);
-            event.reply(renderer.render("skip.success"));
+            event.reply(renderer.render("success"));
         } else {
-            event.reply(renderer.render("skip.no-song"));
+            event.reply(renderer.render("no-song"));
         }
         return true;
     }

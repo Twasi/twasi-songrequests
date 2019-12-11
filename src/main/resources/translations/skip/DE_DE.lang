@@ -1,0 +1,2 @@
+skip.success=Der Song "{song.name}" wurde übersprungen LUL
+skip.no-song=Es ist kein Song in der Liste, der übersprungen werden könnte, {sender.displayName} WutFace
