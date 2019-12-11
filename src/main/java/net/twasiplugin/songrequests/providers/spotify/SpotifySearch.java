@@ -26,6 +26,7 @@ import static net.twasiplugin.songrequests.api.ws.spotify.SpotifyCredentials.get
 public class SpotifySearch extends ProviderSearch {
 
     public SpotifySearch(String query, RequesterDTO requester, User user, int max) throws IOException, SpotifyWebApiException {
+        super(requester);
         ProviderSearch cachedResult = getCachedResult(query);
         if (cachedResult != null) {
             addAll(cachedResult);

@@ -7,7 +7,7 @@ import net.twasiplugin.songrequests.commands.SongRequestCommand;
 public class SongrequestUserPlugin extends TwasiUserPlugin {
 
     public SongrequestUserPlugin() {
-        registerCommand(SongRequestCommand.class);
-        registerCommand(SkipCommand.class);
+        registerCommand(new SongRequestCommand(this));
+        registerCommand(new SkipCommand(this));
     }
 }

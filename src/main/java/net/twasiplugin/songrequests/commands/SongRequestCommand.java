@@ -17,6 +17,7 @@ import net.twasiplugin.songrequests.database.requests.exceptions.DuplicateSongEx
 import net.twasiplugin.songrequests.database.requests.exceptions.TooManyRequestsException;
 import net.twasiplugin.songrequests.database.spotifycredentials.SpotifyCredentialsRepo;
 import net.twasiplugin.songrequests.database.usersettings.SongRequestSettingsRepo;
+import net.twasiplugin.songrequests.providers.ProviderSearch;
 import net.twasiplugin.songrequests.providers.spotify.SpotifySearch;
 import net.twasiplugin.songrequests.providers.youtube.YouTubeSearch;
 
@@ -32,11 +33,8 @@ public class SongRequestCommand extends TwasiPluginCommand {
     private static SongRequestRepo songrequestRepo = DataService.get().get(SongRequestRepo.class);
     private static SongRequestSettingsRepo settingsRepo = DataService.get().get(SongRequestSettingsRepo.class);
 
-    private User user;
-
     public SongRequestCommand(TwasiUserPlugin twasiUserPlugin) {
         super(twasiUserPlugin);
-        this.user = twasiUserPlugin.getTwasiInterface().getStreamer().getUser();
     }
 
     @Override
@@ -51,6 +49,8 @@ public class SongRequestCommand extends TwasiPluginCommand {
 
     @Override
     protected boolean execute(TwasiCustomCommandEvent event) {
+        User user = event.getStreamer().getUser();
+
         String name = event.getArgsAsOne();
         TranslationRenderer renderer = event.getRenderer();
 
@@ -62,7 +62,7 @@ public class SongRequestCommand extends TwasiPluginCommand {
         SongRequestProvider provider = detectProvider(name);
         if (provider != null) {
             try {
-                name = name.split(" ", 1)[1];
+                name = name.split(" ", 2)[1];
             } catch (Exception e) {
                 event.reply(renderer.render("help"));
                 return false;
@@ -74,7 +74,7 @@ public class SongRequestCommand extends TwasiPluginCommand {
         renderer.bind("provider", provider.toPrettyString());
         renderer.bind("providerId", String.valueOf(provider.getFrontendId()));
 
-        List<SongDTO> songs;
+        ProviderSearch songs;
         try {
             RequesterDTO requester = RequesterDTO.from(event.getSender());
             songs = provider == SPOTIFY ? new SpotifySearch(name, requester, user, 1) : new YouTubeSearch(name, requester, user, 1);
@@ -95,7 +95,7 @@ public class SongRequestCommand extends TwasiPluginCommand {
         SongDTO song = songs.get(0);
         renderer.bindObject("song", song);
 
-        long maxRequests = getMaxRequests(event.getSender().getGroups());
+        long maxRequests = getMaxRequests(event.getSender().getGroups(), user);
         renderer.bind("maxRequests", String.valueOf(maxRequests));
         try {
             songrequestRepo.checkAndAdd(song, user, maxRequests);
@@ -119,7 +119,7 @@ public class SongRequestCommand extends TwasiPluginCommand {
         return null;
     }
 
-    private long getMaxRequests(List<PermissionGroups> groups) {
+    private long getMaxRequests(List<PermissionGroups> groups, User user) {
         Map<PermissionGroups, Integer> settings = settingsRepo.getByUser(user).getMaxRequests();
         if (groups.contains(PermissionGroups.BROADCASTER) && settings.containsKey(PermissionGroups.BROADCASTER))
             return settings.get(PermissionGroups.BROADCASTER);

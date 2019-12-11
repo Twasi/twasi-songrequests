@@ -70,7 +70,7 @@ public class SongDTO {
                 Arrays.stream(spotifyTrack.getAlbum().getImages()).map((Image::getUrl)).collect(Collectors.toList()),
                 SongRequestProvider.SPOTIFY,
                 spotifyTrack.getUri(),
-                spotifyTrack.getLinkedFrom().getUri(),
+                "http://open.spotify.com/track/" + spotifyTrack.getUri().replace("spotify:track:", ""),
                 spotifyTrack.getDurationMs()
         );
     }

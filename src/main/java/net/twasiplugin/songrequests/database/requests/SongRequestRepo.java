@@ -8,6 +8,7 @@ import net.twasiplugin.songrequests.database.requests.exceptions.TooManyRequests
 import org.mongodb.morphia.query.FindOptions;
 import org.mongodb.morphia.query.Query;
 
+import java.util.Calendar;
 import java.util.List;
 
 public class SongRequestRepo extends Repository<SongRequestDTO> {
@@ -98,6 +99,9 @@ public class SongRequestRepo extends Repository<SongRequestDTO> {
                 throw new TooManyRequestsException();
         if (buildQuery(user, false).field("song.uri").equal(song.uri).count() > 0)
             throw new DuplicateSongException();
+        song.userId = user.getId();
+        song.playInformation = new SongDTO.PlayInformation();
+        song.timeStamp = Calendar.getInstance().getTimeInMillis();
         add(new SongRequestDTO(user.getId(), song));
     }
 }

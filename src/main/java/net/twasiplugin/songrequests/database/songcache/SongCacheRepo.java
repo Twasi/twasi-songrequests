@@ -12,6 +12,9 @@ public class SongCacheRepo extends Repository<SongCacheDTO> {
     }
 
     public void cache(SongDTO song) {
+        song.requester = null;
+        song.playInformation = null;
+        song.userId = null;
         SongCacheDTO dto = query().field("song.uri").equal(song.uri).get();
         if (dto != null) {
             dto.setSong(song); // Update details

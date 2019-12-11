@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class YouTubeSearch extends ProviderSearch {
 
     public YouTubeSearch(String query, RequesterDTO requester, User user, int max) throws IOException {
+        super(requester);
         ProviderSearch cachedResult = getCachedResult(query);
         if (cachedResult != null) {
             addAll(cachedResult);
