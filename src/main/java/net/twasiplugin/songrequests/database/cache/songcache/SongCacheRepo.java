@@ -1,4 +1,4 @@
-package net.twasiplugin.songrequests.database.songcache;
+package net.twasiplugin.songrequests.database.cache.songcache;
 
 import net.twasi.core.database.lib.Repository;
 import net.twasiplugin.songrequests.api.ws.songrequest.models.SongDTO;

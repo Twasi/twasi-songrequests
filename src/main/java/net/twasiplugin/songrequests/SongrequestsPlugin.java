@@ -20,6 +20,9 @@ public class SongrequestsPlugin extends TwasiPlugin<SongrequestsConfig> {
     @Override
     public void onActivate() {
         CONFIG = getConfiguration();
+
+
+
         ServiceRegistry.get(ServletService.class).addServlet(SpotifyAuthServlet.class, "spotify-callback");
     }
 
