@@ -11,8 +11,8 @@ import java.util.ArrayList;
 
 public abstract class ProviderSearch extends ArrayList<SongDTO> {
 
-    protected final static SongCacheRepo cache = DataService.get().get(SongCacheRepo.class);
-    protected final static SearchDetailsRepo repo = DataService.get().get(SearchDetailsRepo.class);
+    private final static SongCacheRepo cache = DataService.get().get(SongCacheRepo.class);
+    private final static SearchDetailsRepo repo = DataService.get().get(SearchDetailsRepo.class);
 
     protected abstract SongRequestProvider getProvider();
 
@@ -24,6 +24,7 @@ public abstract class ProviderSearch extends ArrayList<SongDTO> {
 
     protected final void cache(String query, ProviderSearch results) {
         repo.cache(new SearchDetailsDTO(getProvider(), getFQuery(query), results));
+        if (results != null) results.forEach(cache::cache);
     }
 
     protected String getFQuery(String query) {
