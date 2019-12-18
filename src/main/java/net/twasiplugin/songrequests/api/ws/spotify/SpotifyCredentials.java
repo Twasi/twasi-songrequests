@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
-import static net.twasiplugin.songrequests.SongrequestsPlugin.CONFIG;
+import static net.twasiplugin.songrequests.SongrequestPlugin.CONFIG;
 
 public class SpotifyCredentials extends TwasiWebsocketEndpoint<WebsocketClientConfig> {
 

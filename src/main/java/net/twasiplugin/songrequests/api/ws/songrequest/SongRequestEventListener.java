@@ -15,6 +15,8 @@ import net.twasi.core.database.models.TwitchAccount;
 import net.twasi.core.database.models.User;
 import net.twasi.core.services.providers.DataService;
 import net.twasiplugin.songrequests.SongRequestProvider;
+import net.twasiplugin.songrequests.SongrequestPlugin;
+import net.twasiplugin.songrequests.api.ws.songrequest.models.PreviewSongDTO;
 import net.twasiplugin.songrequests.api.ws.songrequest.models.RequesterDTO;
 import net.twasiplugin.songrequests.api.ws.songrequest.models.SongDTO;
 import net.twasiplugin.songrequests.database.reports.ReportDTO;
@@ -28,6 +30,7 @@ import net.twasiplugin.songrequests.providers.spotify.SpotifySearch;
 import net.twasiplugin.songrequests.providers.youtube.YouTubeSearch;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,6 +74,10 @@ public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<Son
                 return this.remove(msg, user);
             case "setvolume":
                 return this.setVolume(msg);
+            case "preview":
+                List<PreviewSongDTO> previewSongDTOs = SongrequestPlugin.getPreviewSongDTOs(user);
+                Collections.shuffle(previewSongDTOs);
+                return TwasiWebsocketAnswer.success(new Gson().toJsonTree(previewSongDTOs.get(0)));
         }
         return TwasiWebsocketAnswer.warn("No valid request type delivered.");
     }

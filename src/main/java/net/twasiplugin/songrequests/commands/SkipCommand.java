@@ -11,7 +11,7 @@ import net.twasiplugin.songrequests.database.requests.SongRequestRepo;
 import java.time.Duration;
 import java.util.List;
 
-import static net.twasiplugin.songrequests.SongrequestsPlugin.EVENTS;
+import static net.twasiplugin.songrequests.SongrequestPlugin.EVENTS;
 
 public class SkipCommand extends TwasiPluginCommand {
 

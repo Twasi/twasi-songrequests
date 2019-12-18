@@ -10,5 +10,4 @@ public class SongRequestPreviewSongDTO {
         public long duration;
         public String uri;
     }
-
 }
