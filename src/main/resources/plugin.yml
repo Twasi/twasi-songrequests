@@ -1,6 +1,6 @@
 name: twasi-songrequests
 author: Twasi Team
-main: net.twasiplugin.songrequests.SongrequestsPlugin
+main: net.twasiplugin.songrequests.SongrequestPlugin
 description: This plugin is in development and not in a useable state.
 version: 1.0.0
 commands:

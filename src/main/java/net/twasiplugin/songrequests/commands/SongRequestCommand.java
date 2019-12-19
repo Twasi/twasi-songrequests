@@ -9,7 +9,7 @@ import net.twasi.core.plugin.api.customcommands.TwasiPluginCommand;
 import net.twasi.core.services.providers.DataService;
 import net.twasi.core.translations.renderer.TranslationRenderer;
 import net.twasiplugin.songrequests.SongRequestProvider;
-import net.twasiplugin.songrequests.SongrequestsPlugin;
+import net.twasiplugin.songrequests.SongrequestPlugin;
 import net.twasiplugin.songrequests.api.ws.songrequest.models.RequesterDTO;
 import net.twasiplugin.songrequests.api.ws.songrequest.models.SongDTO;
 import net.twasiplugin.songrequests.database.requests.SongRequestRepo;
@@ -109,7 +109,7 @@ public class SongRequestCommand extends TwasiPluginCommand {
             return false;
         }
 
-        SongrequestsPlugin.EVENTS.updateQueue(user);
+        SongrequestPlugin.EVENTS.updateQueue(user);
         event.reply(renderer.render("success"));
         return true;
     }

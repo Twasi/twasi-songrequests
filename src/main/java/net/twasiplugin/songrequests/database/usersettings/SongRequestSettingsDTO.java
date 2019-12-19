@@ -23,7 +23,7 @@ public class SongRequestSettingsDTO extends BaseEntity {
 
     private ObjectId user;
     private Map<PermissionGroups, Integer> maxRequests = DEFAULT_REQUEST_AMOUNTS;
-    private double volumeBalance = 0.5;
+    private double volumeBalance = 0.68;
     private double volume = 0.6;
     private int maxDuration = 600000;
 

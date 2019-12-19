@@ -34,6 +34,7 @@ public class SongRequestDTO extends BaseEntity {
     }
 
     public SongDTO getSong() {
+        song.id = getId().toString();
         return song;
     }
 

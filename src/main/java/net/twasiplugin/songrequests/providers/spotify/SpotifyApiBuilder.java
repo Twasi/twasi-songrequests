@@ -4,7 +4,7 @@ import com.wrapper.spotify.SpotifyApi;
 
 import java.net.URI;
 
-import static net.twasiplugin.songrequests.SongrequestsPlugin.CONFIG;
+import static net.twasiplugin.songrequests.SongrequestPlugin.CONFIG;
 
 public class SpotifyApiBuilder {
 

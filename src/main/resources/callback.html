@@ -16,6 +16,7 @@
         });
         window.opener.postMessage("code:" + code, "*");
         updateText("An error occured. Please close this window and retry.");
+        setTimeout(window.close, 2500);
     </script>
 </body>
 </html>

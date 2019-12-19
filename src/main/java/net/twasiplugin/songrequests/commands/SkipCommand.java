@@ -11,7 +11,7 @@ import net.twasiplugin.songrequests.database.requests.SongRequestRepo;
 import java.time.Duration;
 import java.util.List;
 
-import static net.twasiplugin.songrequests.SongrequestsPlugin.EVENTS;
+import static net.twasiplugin.songrequests.SongrequestPlugin.EVENTS;
 
 public class SkipCommand extends TwasiPluginCommand {
 
@@ -43,9 +43,10 @@ public class SkipCommand extends TwasiPluginCommand {
             renderer.bindObject("song", update.getSong());
             update.setSkipped();
             DataService.get().get(SongRequestRepo.class).commit(update);
-            event.reply(renderer.render("success"));
+            EVENTS.updateQueue(twasiUserPlugin.getTwasiInterface().getStreamer().getUser());
+            event.reply(renderer.render("skip.success"));
         } else {
-            event.reply(renderer.render("no-song"));
+            event.reply(renderer.render("skip.no-song"));
         }
         return true;
     }

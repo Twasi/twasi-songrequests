@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import net.twasi.core.api.ws.api.TwasiWebsocketListenerEndpoint;
 import net.twasi.core.api.ws.models.TwasiWebsocketAnswer;
@@ -14,6 +15,8 @@ import net.twasi.core.database.models.TwitchAccount;
 import net.twasi.core.database.models.User;
 import net.twasi.core.services.providers.DataService;
 import net.twasiplugin.songrequests.SongRequestProvider;
+import net.twasiplugin.songrequests.SongrequestPlugin;
+import net.twasiplugin.songrequests.api.ws.songrequest.models.PreviewSongDTO;
 import net.twasiplugin.songrequests.api.ws.songrequest.models.RequesterDTO;
 import net.twasiplugin.songrequests.api.ws.songrequest.models.SongDTO;
 import net.twasiplugin.songrequests.database.reports.ReportDTO;
@@ -22,10 +25,12 @@ import net.twasiplugin.songrequests.database.requests.SongRequestDTO;
 import net.twasiplugin.songrequests.database.requests.SongRequestRepo;
 import net.twasiplugin.songrequests.database.usersettings.SongRequestSettingsDTO;
 import net.twasiplugin.songrequests.database.usersettings.SongRequestSettingsRepo;
+import net.twasiplugin.songrequests.providers.spotify.SpotifyApiBuilder;
 import net.twasiplugin.songrequests.providers.spotify.SpotifySearch;
 import net.twasiplugin.songrequests.providers.youtube.YouTubeSearch;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -67,8 +72,24 @@ public class SongRequestEventListener extends TwasiWebsocketListenerEndpoint<Son
                 return this.settings(msg, user);
             case "remove":
                 return this.remove(msg, user);
+            case "setvolume":
+                return this.setVolume(msg);
+            case "preview":
+                List<PreviewSongDTO> previewSongDTOs = SongrequestPlugin.getPreviewSongDTOs(user);
+                Collections.shuffle(previewSongDTOs);
+                return TwasiWebsocketAnswer.success(new Gson().toJsonTree(previewSongDTOs.get(0)));
         }
         return TwasiWebsocketAnswer.warn("No valid request type delivered.");
+    }
+
+    private JsonElement setVolume(TwasiWebsocketMessage msg) throws IOException, SpotifyWebApiException {
+        JsonObject action = msg.getAction().getAsJsonObject();
+        SpotifyApi api = SpotifyApiBuilder.build();
+        api.setAccessToken(action.get("token").getAsString());
+        api.setVolumeForUsersPlayback((int) (action.get("volume").getAsFloat() * 100))
+                .device_id(action.get("deviceId").getAsString())
+                .build().execute();
+        return TwasiWebsocketAnswer.success();
     }
 
     private JsonElement remove(TwasiWebsocketMessage msg, User user) {
