@@ -17,6 +17,7 @@ public abstract class ProviderSearch extends ArrayList<SongDTO> {
     protected abstract SongRequestProvider getProvider();
 
     protected final ProviderSearch getCachedResult(String query) {
+        if (true) return null; // TODO fix weird exception when loading from cache
         SearchDetailsDTO dto = repo.get(getFQuery(query), getProvider());
         if (dto == null) return null;
         return dto.results;

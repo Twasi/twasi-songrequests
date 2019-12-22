@@ -7,4 +7,4 @@ commands:
   - sr
   - songrequest
   - skip
-  - wrongsong
+#  - wrongsong

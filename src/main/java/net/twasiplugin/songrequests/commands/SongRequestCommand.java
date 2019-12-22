@@ -53,7 +53,7 @@ public class SongRequestCommand extends TwasiPluginCommand {
         User user = event.getStreamer().getUser();
 
         String name = event.getArgsAsOne();
-        TranslationRenderer renderer = event.getRenderer(/*"songrequests"*/);
+        TranslationRenderer renderer = event.getRenderer("songrequests");
 
         if (name.length() == 0) {
             event.reply(renderer.render("help"));
@@ -84,6 +84,7 @@ public class SongRequestCommand extends TwasiPluginCommand {
             credentialsRepo.removeByUser(user);
             return false;
         } catch (Exception e) {
+            e.printStackTrace();
             event.reply(renderer.render("error"));
             return false;
         }
