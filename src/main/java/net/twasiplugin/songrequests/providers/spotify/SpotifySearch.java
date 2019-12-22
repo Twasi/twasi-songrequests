@@ -57,7 +57,6 @@ public class SpotifySearch extends ProviderSearch {
         List<SongDTO> list = Arrays.stream(execute.getItems()).map(track -> SongDTO.from(track, (RequesterDTO) null, user.getId())).collect(Collectors.toList());
         addAll(list);
 
-
         cache(query, this);
     }
 

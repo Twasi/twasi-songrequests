@@ -8,6 +8,7 @@ import com.wrapper.spotify.model_objects.specification.ArtistSimplified;
 import com.wrapper.spotify.model_objects.specification.Image;
 import com.wrapper.spotify.model_objects.specification.Track;
 import net.twasi.core.database.models.TwitchAccount;
+import net.twasi.core.plugin.api.variables.objectvariables.TwasiObjectVariable;
 import net.twasiplugin.songrequests.SongRequestProvider;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
@@ -17,9 +18,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
+@TwasiObjectVariable.Resolvable
 public class SongDTO {
 
     public ObjectId userId;
+    @TwasiObjectVariable.Protected
     public String id = null;
     public RequesterDTO requester;
     public String name;
@@ -30,6 +33,7 @@ public class SongDTO {
     public String url;
     public int duration;
     public long timeStamp;
+    @TwasiObjectVariable.Protected
     public PlayInformation playInformation = new PlayInformation();
 
     public SongDTO(ObjectId userId, RequesterDTO requester, String songName, List<String> artists, List<String> covers, SongRequestProvider provider, String uri, String url, int duration, long timeStamp) {

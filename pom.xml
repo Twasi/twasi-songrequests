@@ -44,19 +44,13 @@
             <name>libs-release</name>
             <url>https://artifactory.twasi.net/artifactory/libs-release</url>
         </repository>
-        <repository>
-            <snapshots/>
-            <id>snapshots</id>
-            <name>libs-snapshot</name>
-            <url>https://artifactory.twasi.net/artifactory/libs-snapshot</url>
-        </repository>
     </repositories>
 
     <dependencies>
         <dependency>
             <groupId>net.twasi</groupId>
             <artifactId>twasi-core</artifactId>
-            <version>1.0.3</version>
+            <version>LATEST</version>
             <scope>provided</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/se.michaelthelin.spotify/spotify-web-api-java -->

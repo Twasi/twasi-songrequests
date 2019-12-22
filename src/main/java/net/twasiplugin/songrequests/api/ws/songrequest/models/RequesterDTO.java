@@ -3,12 +3,15 @@ package net.twasiplugin.songrequests.api.ws.songrequest.models;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import net.twasi.core.database.models.TwitchAccount;
+import net.twasi.core.plugin.api.variables.objectvariables.TwasiObjectVariable;
 
+@TwasiObjectVariable.Resolvable
 public class RequesterDTO {
 
     public String displayName;
     public String userName;
     public String twitchId;
+    @TwasiObjectVariable.Protected
     public String avatar;
 
     public RequesterDTO(String displayName, String userName, String twitchId, String avatar) {

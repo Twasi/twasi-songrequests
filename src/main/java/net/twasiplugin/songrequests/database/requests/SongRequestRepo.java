@@ -36,6 +36,19 @@ public class SongRequestRepo extends Repository<SongRequestDTO> {
         return buildQuery(user, played).asList(new FindOptions().limit(amount));
     }
 
+    /**
+     * Function to get songrequest entities from database
+     *
+     * @param user   The user to get songrequest information for
+     * @param played Whether to get already played or queued songs
+     * @param amount The amount of songs to query
+     * @param offset A query offset
+     * @return A list of songrequests
+     */
+    public List<SongRequestDTO> getRequestsByUser(User user, boolean played, int amount, int offset) {
+        return buildQuery(user, played).asList(new FindOptions().limit(amount).skip(offset));
+    }
+
     private Query<SongRequestDTO> buildQuery(User user, boolean played) {
         Query<SongRequestDTO> q = query()
                 .field("user").equal(user.getId());

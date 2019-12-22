@@ -1,9 +1,10 @@
 name: twasi-songrequests
 author: Twasi Team
 main: net.twasiplugin.songrequests.SongrequestPlugin
-description: This plugin is in development and not in a useable state.
+description: Songrequests with Spotify and YouTube
 version: 1.0.0
 commands:
   - sr
   - songrequest
   - skip
+  - wrongsong
