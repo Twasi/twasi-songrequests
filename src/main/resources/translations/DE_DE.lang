@@ -8,3 +8,6 @@ success=Der Song "{song.name}" wurde übersprungen LUL
 no-song=Es ist kein Song in der Liste, der übersprungen werden könnte, {sender.displayName} WutFace
 skip.success=Der Song "{song.name}" wurde übersprungen LUL
 skip.no-song=Es ist kein Song in der Liste, der übersprungen werden könnte, {sender.displayName} WutFace
+
+plugin.title=Songrequests 🎧
+plugin.description=Lasse deine Zuschauer bestimmen, welche Musik in deinem Stream abgespielt wird! Es werden YouTube und Spotify unterstützt.
